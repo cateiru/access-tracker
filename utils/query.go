@@ -1,6 +1,9 @@
 package utils
 
-import "net/http"
+import (
+	"errors"
+	"net/http"
+)
 
 // Get http query.
 //
@@ -10,8 +13,12 @@ import "net/http"
 //
 // Returns
 //	query string
-func GetQuery(r *http.Request, key string) string {
+func GetQuery(r *http.Request, key string) (string, error) {
 	query := r.URL.Query().Get(key)
 
-	return query
+	if len(query) == 0 {
+		return "", errors.New("query is empty")
+	}
+
+	return query, nil
 }
