@@ -7,7 +7,7 @@ import (
 	"github.com/yuto51942/access-tracker/utils"
 )
 
-func TrackHandler(w http.ResponseWriter, r *http.Request) {
+func RootHandler(w http.ResponseWriter, r *http.Request) {
 	id, err := utils.GetQuery(r, "id")
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -17,11 +17,7 @@ func TrackHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(id))
 }
 
-func WhoisHandler(w http.ResponseWriter, r *http.Request) {
-
-}
-
-func CreateHandler(w http.ResponseWriter, r *http.Request) {
+func TrackHandler(w http.ResponseWriter, r *http.Request) {
 	bytes, err := control.Create()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -30,4 +26,8 @@ func CreateHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(bytes)
+}
+
+func WhoisHandler(w http.ResponseWriter, r *http.Request) {
+
 }
