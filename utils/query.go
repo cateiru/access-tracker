@@ -1,4 +1,4 @@
-package handler
+package utils
 
 import "net/http"
 
@@ -10,7 +10,7 @@ import "net/http"
 //
 // Returns
 //	query string
-func getQuery(r *http.Request, key string) string {
+func GetQuery(r *http.Request, key string) string {
 	query := r.URL.Query().Get(key)
 
 	return query

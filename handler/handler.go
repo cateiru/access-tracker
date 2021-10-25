@@ -9,3 +9,7 @@ func TrackHandler(w http.ResponseWriter, r *http.Request) {
 func WhoisHandler(w http.ResponseWriter, r *http.Request) {
 
 }
+
+func CreateHandler(w http.ResponseWriter, r *http.Request) {
+
+}

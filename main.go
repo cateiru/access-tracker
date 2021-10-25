@@ -11,6 +11,7 @@ func main() {
 
 	mux.HandleFunc("/", handler.TrackHandler)
 	mux.HandleFunc("/whois", handler.WhoisHandler)
+	mux.HandleFunc("/create", handler.CreateHandler)
 
 	if err := http.ListenAndServe(":3000", mux); err != nil {
 		panic(err)
