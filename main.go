@@ -9,9 +9,8 @@ import (
 func main() {
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("/", handler.RootHandler)
-	mux.HandleFunc("/whois", handler.WhoisHandler)
-	mux.HandleFunc("/track", handler.TrackHandler)
+	mux.HandleFunc("/", handler.TrackHandler)
+	mux.HandleFunc("/u", handler.UserHandler)
 
 	if err := http.ListenAndServe(":3000", mux); err != nil {
 		panic(err)
