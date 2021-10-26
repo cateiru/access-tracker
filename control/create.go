@@ -13,6 +13,7 @@ func Create(ctx *context.Context, redirectUrl string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+	id = id[:10]
 	accessKey, err := utils.CreateId()
 	if err != nil {
 		return nil, err
@@ -22,7 +23,7 @@ func Create(ctx *context.Context, redirectUrl string) ([]byte, error) {
 		return nil, err
 	}
 
-	return utils.ToJson(types.Created{TrackId: id[:8], AccessKey: accessKey, RedirectUrl: redirectUrl})
+	return utils.ToJson(types.Created{TrackId: id, AccessKey: accessKey, RedirectUrl: redirectUrl})
 }
 
 func setDB(ctx *context.Context, id string, accessKey string, redirectUrl string) error {
