@@ -12,6 +12,7 @@ func WhoIs(ctx *context.Context, id string, accessKey string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer dbOp.Close()
 
 	history, err := dbOp.GetHistory()
 	if err != nil {

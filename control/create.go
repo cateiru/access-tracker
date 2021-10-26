@@ -30,10 +30,10 @@ func Create(ctx *context.Context, redirectUrl string) ([]byte, error) {
 
 func setDB(ctx *context.Context, value types.Created) error {
 	dbOp, err := database.NewOperator(ctx, value.TrackId, value.AccessKey)
-	defer dbOp.Close()
 	if err != nil {
 		return err
 	}
+	defer dbOp.Close()
 
 	return dbOp.SetTracking(value.RedirectUrl)
 }

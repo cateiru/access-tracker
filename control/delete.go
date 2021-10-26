@@ -8,10 +8,10 @@ import (
 
 func Delete(ctx *context.Context, id string, accessKey string) error {
 	dbOp, err := database.NewOperator(ctx, id, accessKey)
-	defer dbOp.Close()
 	if err != nil {
 		return err
 	}
+	defer dbOp.Close()
 
 	return dbOp.Delete()
 }
