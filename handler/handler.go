@@ -2,17 +2,23 @@ package handler
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/yuto51942/access-tracker/control"
-	"github.com/yuto51942/access-tracker/utils"
 )
 
 func RootHandler(w http.ResponseWriter, r *http.Request) {
-	id, err := utils.GetQuery(r, "id")
-	if err != nil {
+	// get url path.
+	// Example: http://example.com/hoge -> hoge
+	path := strings.FieldsFunc(r.URL.Path, func(r rune) bool {
+		return r == '/'
+	})
+
+	if len(path) != 1 || len(path[0]) == 0 {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
+	id := path[0]
 
 	w.Write([]byte(id))
 }
