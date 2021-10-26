@@ -4,3 +4,8 @@ Content-Type: application/json
 {"redirect": "https://tdu.app"}
 
 ###
+
+GET https://access-tracker-nwu7rw5hea-an.a.run.app/u
+
+
+###
