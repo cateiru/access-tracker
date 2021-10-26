@@ -28,11 +28,11 @@ func (c *Database) Close() {
 }
 
 func (c *Database) Get(key *datastore.Key, entity interface{}) error {
-	if err := c.client.Get(*c.ctx, key, entity); err != nil {
-		return err
-	}
+	return c.client.Get(*c.ctx, key, &entity)
+}
 
-	return nil
+func (c *Database) GetAll(query *datastore.Query, entities interface{}) ([]*datastore.Key, error) {
+	return c.client.GetAll(*c.ctx, query, &entities)
 }
 
 func (c *Database) Put(key *datastore.Key, entry interface{}) error {
@@ -45,14 +45,4 @@ func (c *Database) Put(key *datastore.Key, entry interface{}) error {
 
 func (c *Database) Delete(key *datastore.Key) error {
 	return c.client.Delete(*c.ctx, key)
-}
-
-func CreateKey(kind string, keys ...string) *datastore.Key {
-	var key = new(datastore.Key)
-
-	for _, keyId := range keys {
-		key = datastore.NameKey(kind, keyId, key)
-	}
-
-	return key
 }

@@ -29,22 +29,11 @@ func Create(ctx *context.Context, redirectUrl string) ([]byte, error) {
 }
 
 func setDB(ctx *context.Context, value types.Created) error {
-	db, err := database.New(ctx, database.ProjectID)
+	dbOp, err := database.NewOperator(ctx, value.TrackId, value.AccessKey)
+	defer dbOp.Close()
 	if err != nil {
 		return err
 	}
 
-	key := database.CreateKey("Tracking", value.TrackId)
-	historyKey := database.CreateKey("History", value.TrackId)
-
-	if err := db.Put(key, types.IdEntity{
-		TrackId:     value.TrackId,
-		AccessKey:   value.AccessKey,
-		RedirectUrl: value.RedirectUrl,
-		History:     historyKey,
-	}); err != nil {
-		return err
-	}
-
-	return nil
+	return dbOp.SetTracking(value.RedirectUrl)
 }
