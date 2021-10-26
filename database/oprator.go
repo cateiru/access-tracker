@@ -17,7 +17,7 @@ type Operator struct {
 }
 
 func NewOperator(ctx *context.Context, id string, accessKey string) (*Operator, error) {
-	db, err := New(ctx, ProjectID)
+	db, err := New(ctx)
 	if err != nil {
 		return nil, err
 	}

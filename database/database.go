@@ -11,8 +11,8 @@ type Database struct {
 	client *datastore.Client
 }
 
-func New(ctx *context.Context, projectId string) (*Database, error) {
-	client, err := datastore.NewClient(*ctx, projectId)
+func New(ctx *context.Context) (*Database, error) {
+	client, err := datastore.NewClient(*ctx, "")
 	if err != nil {
 		return nil, err
 	}
