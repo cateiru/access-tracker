@@ -19,24 +19,30 @@ func Create(ctx *context.Context, redirectUrl string) ([]byte, error) {
 		return nil, err
 	}
 
-	if err := setDB(ctx, id, accessKey, redirectUrl); err != nil {
+	value := types.Created{TrackId: id, AccessKey: accessKey, RedirectUrl: redirectUrl}
+
+	if err := setDB(ctx, value); err != nil {
 		return nil, err
 	}
 
-	return utils.ToJson(types.Created{TrackId: id, AccessKey: accessKey, RedirectUrl: redirectUrl})
+	return utils.ToJson(value)
 }
 
-func setDB(ctx *context.Context, id string, accessKey string, redirectUrl string) error {
+func setDB(ctx *context.Context, value types.Created) error {
 	db, err := database.New(ctx, database.ProjectID)
 	if err != nil {
 		return err
 	}
 
-	key := database.CreateKey("Tracking", id)
-	historyKey := database.CreateKey("History", id)
+	key := database.CreateKey("Tracking", value.TrackId)
+	historyKey := database.CreateKey("History", value.TrackId)
 
 	if err := db.Put(key, types.IdEntity{
-		TrackId: id, AccessKey: accessKey, RedirectUrl: redirectUrl, History: historyKey}); err != nil {
+		TrackId:     value.TrackId,
+		AccessKey:   value.AccessKey,
+		RedirectUrl: value.RedirectUrl,
+		History:     historyKey,
+	}); err != nil {
 		return err
 	}
 
