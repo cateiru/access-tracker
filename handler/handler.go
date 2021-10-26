@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/sirupsen/logrus"
 	"github.com/yuto51942/access-tracker/control"
 	"github.com/yuto51942/access-tracker/utils"
 )
@@ -27,6 +28,7 @@ func TrackHandler(w http.ResponseWriter, r *http.Request) {
 
 	redirect, err := control.Tracking(&ctx, id, ip)
 	if err != nil {
+		logrus.Error(err)
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
@@ -55,6 +57,7 @@ func CreateHandler(w http.ResponseWriter, r *http.Request) {
 
 	bytes, err := control.Create(&ctx, redirectUrl)
 	if err != nil {
+		logrus.Error(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -69,11 +72,13 @@ func DeleteHandler(w http.ResponseWriter, r *http.Request) {
 
 	id, err := utils.GetQuery(r, "id")
 	if err != nil {
+		logrus.Error(err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 	accessKey, err := utils.GetQuery(r, "key")
 	if err != nil {
+		logrus.Error(err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -92,17 +97,20 @@ func WhoisHandler(w http.ResponseWriter, r *http.Request) {
 
 	id, err := utils.GetQuery(r, "id")
 	if err != nil {
+		logrus.Error(err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 	accessKey, err := utils.GetQuery(r, "key")
 	if err != nil {
+		logrus.Error(err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	history, err := control.WhoIs(&ctx, id, accessKey)
 	if err != nil {
+		logrus.Error(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
