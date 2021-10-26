@@ -13,7 +13,7 @@ steps:
     id: 'apply-member-role-cloud-run'
     args: ['beta', 'run', 'services', 'add-iam-policy-binding', '${_SERVICE_NAME}', '--region', '${_REGION}', '--member', 'allUsers', '--role', 'roles/run.invoker']
 substitutions:
-  _REGION: us-central1
-  _SERVICE_NAME: gcloud-exec-example
+  _REGION: asia-northeast1-a
+  _SERVICE_NAME: access-tracker
 images:
   - gcr.io/$PROJECT_ID/${_SERVICE_NAME}

@@ -20,8 +20,6 @@ RUN go build \
     -o /go/bin/main \
     -ldflags '-s -w'
 
-EXPOSE 3000
-
 FROM scratch as runner
 
 FROM scratch
