@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/yuto51942/access-tracker/control"
+	"github.com/yuto51942/access-tracker/utils"
 )
 
 // Tracking and redirect
@@ -49,8 +50,8 @@ func UserHandler(w http.ResponseWriter, r *http.Request) {
 func CreateHandler(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
-	// TODO
-	redirectUrl := ""
+	r.ParseForm()
+	redirectUrl := r.PostFormValue("redirect")
 
 	bytes, err := control.Create(&ctx, redirectUrl)
 	if err != nil {
@@ -66,8 +67,16 @@ func CreateHandler(w http.ResponseWriter, r *http.Request) {
 func DeleteHandler(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
-	id := ""
-	accessKey := ""
+	id, err := utils.GetQuery(r, "id")
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	accessKey, err := utils.GetQuery(r, "key")
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
 
 	if err := control.Delete(&ctx, id, accessKey); err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -79,5 +88,25 @@ func DeleteHandler(w http.ResponseWriter, r *http.Request) {
 
 // Reference access history.
 func WhoisHandler(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
 
+	id, err := utils.GetQuery(r, "id")
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	accessKey, err := utils.GetQuery(r, "key")
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	history, err := control.WhoIs(&ctx, id, accessKey)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(history)
 }
