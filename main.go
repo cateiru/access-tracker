@@ -13,7 +13,7 @@ var port string
 func init() {
 	_port := os.Getenv("PORT")
 
-	if len(port) == 0 {
+	if len(_port) == 0 {
 		port = ":3000"
 	} else {
 		port = strings.Join([]string{":", _port}, "")
