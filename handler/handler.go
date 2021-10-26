@@ -9,6 +9,8 @@ import (
 
 // Tracking and redirect
 func TrackHandler(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
 	// get url path.
 	// Example: http://example.com/hoge -> hoge
 	path := strings.FieldsFunc(r.URL.Path, func(r rune) bool {
@@ -20,8 +22,15 @@ func TrackHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	id := path[0]
+	ip := r.RemoteAddr
 
-	w.Write([]byte(id))
+	redirect, err := control.Tracking(&ctx, id, ip)
+	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+
+	http.Redirect(w, r, redirect, http.StatusMovedPermanently)
 }
 
 // Setting: Create url, reference access history and delete tracking url.
