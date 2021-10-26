@@ -1,6 +1,11 @@
 package utils
 
-import "github.com/google/uuid"
+import (
+	"crypto/sha256"
+	"encoding/hex"
+
+	"github.com/google/uuid"
+)
 
 // Create uniq id.
 func CreateId() (string, error) {
@@ -8,5 +13,8 @@ func CreateId() (string, error) {
 	if err != nil {
 		return "", nil
 	}
-	return id.String(), nil
+
+	hashedValue := sha256.Sum256([]byte(id.String()))
+
+	return hex.EncodeToString(hashedValue[:]), nil
 }
