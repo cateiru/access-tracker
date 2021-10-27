@@ -26,7 +26,7 @@ func TrackHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	id := path[0]
-	ip := r.RemoteAddr
+	ip := r.Header.Get("x-forwarded-for")
 
 	redirect, err := control.Tracking(&ctx, id, ip)
 	if err != nil {
@@ -40,6 +40,8 @@ func TrackHandler(w http.ResponseWriter, r *http.Request) {
 	} else {
 		w.WriteHeader(http.StatusOK)
 	}
+
+	w.Header().Set("Cache-Control", "no-store")
 }
 
 // Setting: Create url, reference access history and delete tracking url.
@@ -52,6 +54,8 @@ func UserHandler(w http.ResponseWriter, r *http.Request) {
 	case http.MethodDelete:
 		DeleteHandler(w, r)
 	}
+
+	w.Header().Set("Cache-Control", "no-store")
 }
 
 // Create tracking url
