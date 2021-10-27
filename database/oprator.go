@@ -107,7 +107,8 @@ func (c *Operator) Delete() error {
 
 	if entity.AccessKey == c.accessKey {
 		// delete history
-		if err := c.db.Delete(entity.History); err != nil {
+		key := utils.CreateKey(c.id)
+		if err := c.db.Delete(key); err != nil {
 			return err
 		}
 
