@@ -109,7 +109,14 @@ func (c *Operator) Delete() error {
 		keys = append(keys, utils.CreateKey(c.id, history.UniqueId))
 	}
 
-	return c.db.Delete(keys)
+	if err := c.db.DeleteMulti(keys); err != nil {
+		return err
+	}
+
+	key := utils.CreateKey("Tracking", c.id)
+
+	return c.db.Delete(key)
+
 }
 
 func (c *Operator) Close() {

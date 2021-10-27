@@ -43,6 +43,10 @@ func (c *Database) Put(key *datastore.Key, entry interface{}) error {
 	return nil
 }
 
-func (c *Database) Delete(key []*datastore.Key) error {
+func (c *Database) DeleteMulti(key []*datastore.Key) error {
 	return c.client.DeleteMulti(*c.ctx, key)
+}
+
+func (c *Database) Delete(key *datastore.Key) error {
+	return c.client.Delete(*c.ctx, key)
 }
