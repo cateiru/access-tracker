@@ -41,13 +41,11 @@ func (c *Operator) GetTracking() (*types.IdEntity, error) {
 }
 
 func (c *Operator) SetTracking(redirectUrl string) error {
-	key := utils.CreateKey("Tracking", "TrackId")
-	historyKey := utils.CreateKey(c.id)
+	key := utils.CreateKey("Tracking", c.id)
 	entity := types.IdEntity{
 		TrackId:     c.id,
 		AccessKey:   c.accessKey,
 		RedirectUrl: redirectUrl,
-		History:     historyKey,
 		Create:      time.Now(),
 	}
 
