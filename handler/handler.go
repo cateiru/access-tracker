@@ -36,7 +36,7 @@ func TrackHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if utils.IsUrl(redirect) {
-		http.Redirect(w, r, redirect, http.StatusMovedPermanently)
+		http.Redirect(w, r, redirect, http.StatusFound)
 	} else {
 		w.WriteHeader(http.StatusOK)
 	}
