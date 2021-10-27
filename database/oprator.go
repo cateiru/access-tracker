@@ -49,6 +49,7 @@ func (c *Operator) SetTracking(redirectUrl string) error {
 		AccessKey:   c.accessKey,
 		RedirectUrl: redirectUrl,
 		History:     historyKey,
+		Create:      time.Now(),
 	}); err != nil {
 		return err
 	}
