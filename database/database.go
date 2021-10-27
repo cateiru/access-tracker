@@ -36,7 +36,7 @@ func (c *Database) GetAll(query *datastore.Query, entities interface{}) ([]*data
 }
 
 func (c *Database) Put(key *datastore.Key, entry interface{}) error {
-	if _, err := c.client.Put(*c.ctx, key, entry); err != nil {
+	if _, err := c.client.Put(*c.ctx, key, &entry); err != nil {
 		return err
 	}
 
