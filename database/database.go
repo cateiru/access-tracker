@@ -28,11 +28,11 @@ func (c *Database) Close() {
 }
 
 func (c *Database) Get(key *datastore.Key, entity interface{}) error {
-	return c.client.Get(*c.ctx, key, &entity)
+	return c.client.Get(*c.ctx, key, entity)
 }
 
 func (c *Database) GetAll(query *datastore.Query, entities interface{}) ([]*datastore.Key, error) {
-	return c.client.GetAll(*c.ctx, query, &entities)
+	return c.client.GetAll(*c.ctx, query, entities)
 }
 
 func (c *Database) Put(key *datastore.Key, entry interface{}) error {
