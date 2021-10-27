@@ -63,7 +63,7 @@ func (c *Operator) GetHistory() (*[]types.History, error) {
 	}
 
 	if entity.AccessKey == c.accessKey {
-		query := datastore.NewQuery(c.accessKey)
+		query := datastore.NewQuery(c.id)
 		var posts []types.History
 
 		_, err := c.db.GetAll(query, &posts)
