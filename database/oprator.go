@@ -33,7 +33,7 @@ func (c *Operator) GetTracking() (*types.IdEntity, error) {
 	key := utils.CreateKey("Tracking", c.id)
 	entity := new(types.IdEntity)
 
-	if err := c.db.Get(key, entity); err != nil {
+	if err := c.db.Get(key, *entity); err != nil {
 		return nil, err
 	}
 
