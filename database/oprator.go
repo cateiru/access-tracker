@@ -41,7 +41,7 @@ func (c *Operator) GetTracking() (*types.IdEntity, error) {
 }
 
 func (c *Operator) SetTracking(redirectUrl string) error {
-	key := utils.CreateKey("Tracking", c.id)
+	key := utils.CreateKey("Tracking", "TrackId")
 	historyKey := utils.CreateKey(c.id)
 	entity := types.IdEntity{
 		TrackId:     c.id,
@@ -86,12 +86,13 @@ func (c *Operator) SetHistory(ip string) error {
 	}
 
 	historyKey := utils.CreateKey(c.id, uniqueId)
-
-	if err := c.db.Put(historyKey, types.History{
+	entity := types.History{
 		Ip:       ip,
 		UniqueId: uniqueId,
 		Date:     time.Now(),
-	}); err != nil {
+	}
+
+	if err := c.db.Put(historyKey, &entity); err != nil {
 		return err
 	}
 
