@@ -121,6 +121,8 @@ func WhoisHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(history)
+	if history != nil {
+		w.Header().Set("Content-Type", "application/json")
+		w.Write(history)
+	}
 }
