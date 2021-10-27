@@ -98,28 +98,18 @@ func (c *Operator) SetHistory(ip string) error {
 }
 
 func (c *Operator) Delete() error {
-	key := utils.CreateKey("Tracking", c.id)
-	entity := new(types.IdEntity)
-
-	if err := c.db.Get(key, entity); err != nil {
+	histories, err := c.GetHistory()
+	if err != nil {
 		return err
 	}
 
-	if entity.AccessKey == c.accessKey {
-		// delete history
-		key := utils.CreateKey(c.id)
-		if err := c.db.Delete(key); err != nil {
-			return err
-		}
+	keys := []*datastore.Key{}
 
-		// delete primary
-		if err := c.db.Delete(key); err != nil {
-			return err
-		}
-		return nil
+	for _, history := range *histories {
+		keys = append(keys, utils.CreateKey(c.id, history.UniqueId))
 	}
 
-	return errors.New("access key is different")
+	return c.db.Delete(keys)
 }
 
 func (c *Operator) Close() {
