@@ -43,14 +43,15 @@ func (c *Operator) GetTracking() (*types.IdEntity, error) {
 func (c *Operator) SetTracking(redirectUrl string) error {
 	key := utils.CreateKey("Tracking", c.id)
 	historyKey := utils.CreateKey(c.id)
-
-	if err := c.db.Put(key, types.IdEntity{
+	entity := types.IdEntity{
 		TrackId:     c.id,
 		AccessKey:   c.accessKey,
 		RedirectUrl: redirectUrl,
 		History:     historyKey,
 		Create:      time.Now(),
-	}); err != nil {
+	}
+
+	if err := c.db.Put(key, &entity); err != nil {
 		return err
 	}
 
