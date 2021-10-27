@@ -19,5 +19,5 @@ func WhoIs(ctx *context.Context, id string, accessKey string) ([]byte, error) {
 		return nil, err
 	}
 
-	return utils.ToJson(history)
+	return utils.ToJson(*history)
 }

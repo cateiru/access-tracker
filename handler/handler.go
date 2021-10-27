@@ -20,6 +20,7 @@ func TrackHandler(w http.ResponseWriter, r *http.Request) {
 	})
 
 	if len(path) != 1 || len(path[0]) == 0 {
+		logrus.Info(r.URL.Path)
 		logrus.Info(path)
 		w.WriteHeader(http.StatusBadRequest)
 		return
