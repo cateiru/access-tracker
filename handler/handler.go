@@ -35,7 +35,11 @@ func TrackHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	http.Redirect(w, r, redirect, http.StatusMovedPermanently)
+	if utils.IsUrl(redirect) {
+		http.Redirect(w, r, redirect, http.StatusMovedPermanently)
+	} else {
+		w.WriteHeader(http.StatusOK)
+	}
 }
 
 // Setting: Create url, reference access history and delete tracking url.

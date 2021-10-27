@@ -3,6 +3,7 @@ package control
 import (
 	"context"
 
+	"github.com/sirupsen/logrus"
 	"github.com/yuto51942/access-tracker/database"
 	"github.com/yuto51942/access-tracker/utils"
 )
@@ -18,6 +19,8 @@ func WhoIs(ctx *context.Context, id string, accessKey string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	logrus.Info(*history)
 
 	return utils.ToJson(*history)
 }
