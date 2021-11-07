@@ -13,7 +13,7 @@ func Create(ctx *context.Context, redirectUrl string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	id = id[:10]
+	id = id[:5]
 	accessKey, err := utils.CreateId()
 	if err != nil {
 		return nil, err
