@@ -6,6 +6,8 @@ import (
 	"strings"
 
 	"github.com/yuto51942/access-tracker/handler"
+	"golang.org/x/net/http2"
+	"golang.org/x/net/http2/h2c"
 )
 
 var port string
@@ -22,11 +24,17 @@ func init() {
 
 func main() {
 	mux := http.NewServeMux()
+	h2s := &http2.Server{}
 
 	mux.HandleFunc("/", handler.TrackHandler)
 	mux.HandleFunc("/u", handler.UserHandler)
 
-	if err := http.ListenAndServe(port, mux); err != nil {
+	server := &http.Server{
+		Addr:    strings.Join([]string{"0.0.0.0", port}, ""),
+		Handler: h2c.NewHandler(mux, h2s),
+	}
+
+	if err := server.ListenAndServe(); err != nil {
 		panic(err)
 	}
 }
