@@ -15,6 +15,9 @@ func ValidateKey(ctx context.Context, db *database.Database, trackId string, key
 	if err != nil {
 		return status.NewInternalServerErrorError(err).Caller()
 	}
+	if track == nil {
+		return status.NewBadRequestError(errors.New("entity is not found")).Caller()
+	}
 
 	if track.AccessKey != key {
 		return status.NewBadRequestError(errors.New("inaccessible due to lack of authority")).Caller()

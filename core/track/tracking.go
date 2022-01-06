@@ -71,6 +71,7 @@ func Tracking(ctx context.Context, id string, ip string, userAgent string) (stri
 	}
 
 	history := models.History{
+		TrackId:   id,
 		Ip:        ip,
 		UserAgent: string(analyzedUserAgent),
 		UniqueId:  utils.CreateID(0),
