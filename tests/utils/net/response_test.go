@@ -108,9 +108,6 @@ func TestNotfoundError(t *testing.T) {
 
 	var body net.ErrorResponse
 	json.Unmarshal(tools.ConvertByteResp(resp), &body)
-
-	require.Equal(t, body.StatusCode, 404)
-	require.Equal(t, body.Code, 1)
 }
 
 func TestCustomError(t *testing.T) {
