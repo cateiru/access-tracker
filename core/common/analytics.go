@@ -20,11 +20,10 @@ type UserAgent struct {
 	String    string `json:"string"`
 }
 
-// userAgentを解析し、json形式で返します
-func UserAgentToJson(userAgent string) ([]byte, error) {
-	parsed := ua.Parse(userAgent)
+func NewUserAgent(target string) *UserAgent {
+	parsed := ua.Parse(target)
 
-	converted := &UserAgent{
+	return &UserAgent{
 		Name:      parsed.Name,
 		Version:   parsed.Version,
 		OS:        parsed.OS,
@@ -37,8 +36,11 @@ func UserAgentToJson(userAgent string) ([]byte, error) {
 		URL:       parsed.URL,
 		String:    parsed.String,
 	}
+}
 
-	return json.Marshal(converted)
+// userAgentを解析し、json形式で返します
+func (c *UserAgent) ToJson() ([]byte, error) {
+	return json.Marshal(c)
 }
 
 // UserAgentToJsonのjsonを構造体に戻します

@@ -64,22 +64,26 @@ func Tracking(ctx context.Context, id string, ip string, userAgent string) (stri
 	if track == nil {
 		return "", status.NewNotFoundError(errors.New("")).Caller()
 	}
+	analyzedUserAgent := common.NewUserAgent(userAgent)
 
-	analyzedUserAgent, err := common.UserAgentToJson(userAgent)
-	if err != nil {
-		return "", status.NewInternalServerErrorError(err).Caller()
-	}
+	// Bot以外のアクセス履歴を保存する
+	if !analyzedUserAgent.Bot {
+		userAgentByte, err := analyzedUserAgent.ToJson()
+		if err != nil {
+			return "", status.NewInternalServerErrorError(err).Caller()
+		}
 
-	history := models.History{
-		TrackId:   id,
-		Ip:        ip,
-		UserAgent: string(analyzedUserAgent),
-		UniqueId:  utils.CreateID(0),
-		Date:      time.Now(),
-	}
+		history := models.History{
+			TrackId:   id,
+			Ip:        ip,
+			UserAgent: string(userAgentByte),
+			UniqueId:  utils.CreateID(0),
+			Date:      time.Now(),
+		}
 
-	if err := history.Add(ctx, db); err != nil {
-		return "", status.NewInternalServerErrorError(err).Caller()
+		if err := history.Add(ctx, db); err != nil {
+			return "", status.NewInternalServerErrorError(err).Caller()
+		}
 	}
 
 	return track.RedirectUrl, nil
