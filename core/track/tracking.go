@@ -2,27 +2,78 @@ package track
 
 import (
 	"context"
+	"errors"
+	"net/http"
+	"strings"
+	"time"
 
-	"github.com/yuto51942/access-tracker/core"
+	"github.com/cateiru/access-tracker/database"
+	"github.com/cateiru/access-tracker/models"
+	"github.com/cateiru/access-tracker/utils"
+	"github.com/cateiru/access-tracker/utils/net"
+	"github.com/cateiru/go-http-error/httperror/status"
 )
 
-func Tracking(ctx *context.Context, id string, ip string) (string, error) {
-	// note: accessKey is not used.
-	dbOp, err := core.NewOperator(ctx, id, "")
+// Tracking and redirect
+func TrackHandler(w http.ResponseWriter, r *http.Request) error {
+	ctx := r.Context()
+
+	// get url path.
+	// Example: http://example.com/hoge -> hoge
+	path := strings.FieldsFunc(r.URL.Path, func(r rune) bool {
+		return r == '/'
+	})
+
+	if len(path) != 1 || len(path[0]) == 0 {
+		http.Redirect(w, r, "https://cateiru.com", http.StatusFound)
+		return nil
+	}
+	id := path[0]
+	ip := net.GetIPAddress(r)
+	userAgent := net.GetUserAgent(r)
+
+	redirect, err := Tracking(ctx, id, ip, userAgent)
 	if err != nil {
-		return "", err
+		return err
 	}
-	defer dbOp.Close()
 
-	// check exist
-	entity, err := dbOp.GetTracking()
+	if utils.IsUrl(redirect) {
+		http.Redirect(w, r, redirect, http.StatusFound)
+	} else {
+		net.ResponseOK(w, redirect)
+	}
+
+	w.Header().Set("Cache-Control", "no-store")
+
+	return nil
+}
+
+func Tracking(ctx context.Context, id string, ip string, userAgent string) (string, error) {
+	db, err := database.NewDatabase(ctx)
 	if err != nil {
-		return "", err
+		return "", status.NewInternalServerErrorError(err).Caller()
 	}
 
-	if err := dbOp.SetHistory(ip); err != nil {
-		return "", err
+	track, err := models.GetTrackByTrackID(ctx, db, id)
+	if err != nil {
+		return "", status.NewInternalServerErrorError(err).Caller()
 	}
 
-	return entity.RedirectUrl, nil
+	// trackIDが定義されていない場合は404を返す
+	if track == nil {
+		return "", status.NewNotFoundError(errors.New("")).Caller()
+	}
+
+	history := models.History{
+		Ip:        ip,
+		UserAgent: userAgent,
+		UniqueId:  utils.CreateID(0),
+		Date:      time.Now(),
+	}
+
+	if err := history.Add(ctx, db); err != nil {
+		return "", status.NewInternalServerErrorError(err).Caller()
+	}
+
+	return track.RedirectUrl, nil
 }

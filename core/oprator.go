@@ -6,9 +6,9 @@ import (
 	"time"
 
 	"cloud.google.com/go/datastore"
-	"github.com/yuto51942/access-tracker/database"
-	"github.com/yuto51942/access-tracker/types"
-	"github.com/yuto51942/access-tracker/utils"
+	"github.com/cateiru/access-tracker/database"
+	"github.com/cateiru/access-tracker/types"
+	"github.com/cateiru/access-tracker/utils"
 )
 
 type Operator struct {
@@ -79,10 +79,7 @@ func (c *Operator) GetHistory() (*[]types.History, error) {
 }
 
 func (c *Operator) SetHistory(ip string) error {
-	uniqueId, err := utils.CreateId()
-	if err != nil {
-		return err
-	}
+	uniqueId := utils.CreateID(0)
 
 	historyKey := database.CreateNameKey(c.id, uniqueId)
 	entity := types.History{

@@ -7,46 +7,72 @@ import (
 )
 
 type Database struct {
-	ctx    *context.Context
-	client *datastore.Client
+	Client *datastore.Client
 }
 
-func New(ctx *context.Context) (*Database, error) {
-	client, err := datastore.NewClient(*ctx, "")
+// Datastoreのclientを作成する
+// projectIDは環境変数 `DATASTORE_PROJECT_ID` で設定する必要があります
+func NewDatabase(ctx context.Context) (*Database, error) {
+	client, err := datastore.NewClient(ctx, "")
 	if err != nil {
 		return nil, err
 	}
 
 	return &Database{
-		ctx:    ctx,
-		client: client,
+		Client: client,
 	}, nil
 }
 
+// Datastoreのclientを閉じる
 func (c *Database) Close() {
-	c.client.Close()
+	c.Client.Close()
 }
 
-func (c *Database) Get(key *datastore.Key, entity interface{}) error {
-	return c.client.Get(*c.ctx, key, entity)
+// keyを指定してdatastoreのentryを1つ取得する
+//
+// 要素が見つからない場合、trueを返します
+func (c *Database) Get(ctx context.Context, key *datastore.Key, entity interface{}) (bool, error) {
+	err := c.Client.Get(ctx, key, entity)
+	if err == datastore.ErrNoSuchEntity {
+		return true, nil
+	}
+	return false, err
 }
 
-func (c *Database) GetAll(query *datastore.Query, entities interface{}) ([]*datastore.Key, error) {
-	return c.client.GetAll(*c.ctx, query, entities)
+// queryに一致するdatastoreのentryをすべて取得する
+func (c *Database) GetAll(ctx context.Context, query *datastore.Query, entities interface{}) ([]*datastore.Key, error) {
+	keys, err := c.Client.GetAll(ctx, query, entities)
+	if err == datastore.ErrNoSuchEntity {
+		return nil, nil
+	}
+	return keys, err
 }
 
-func (c *Database) Put(key *datastore.Key, entry interface{}) error {
-	if _, err := c.client.Put(*c.ctx, key, entry); err != nil {
+// keyを指定してentryをdatastoreに追加する
+func (c *Database) Put(ctx context.Context, key *datastore.Key, entry interface{}) error {
+	if _, err := c.Client.Put(ctx, key, entry); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (c *Database) DeleteMulti(key []*datastore.Key) error {
-	return c.client.DeleteMulti(*c.ctx, key)
+// 指定したqueryの数を返します
+func (c *Database) Count(ctx context.Context, query *datastore.Query) (int, error) {
+	return c.Client.Count(ctx, query)
 }
 
-func (c *Database) Delete(key *datastore.Key) error {
-	return c.client.Delete(*c.ctx, key)
+// queryを実行します
+func (c *Database) Run(ctx context.Context, query *datastore.Query) *datastore.Iterator {
+	return c.Client.Run(ctx, query)
+}
+
+// 指定したkeyのentryを複数削除
+func (c *Database) DeleteMulti(ctx context.Context, key []*datastore.Key) error {
+	return c.Client.DeleteMulti(ctx, key)
+}
+
+// 指定したkeyのentryを削除
+func (c *Database) Delete(ctx context.Context, key *datastore.Key) error {
+	return c.Client.Delete(ctx, key)
 }
