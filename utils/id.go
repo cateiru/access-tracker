@@ -1,20 +1,36 @@
+// ID, UUIDを生成します。
+//
+// IDはUUIDをseedにしたSHA256のハッシュ値（長さ指定）を返します。
+//
+// Example:
+//	uuid := UUID()
+//
+//	idMax := CreateID(0) // 長さ0だと最大長を返す
+//	id10 := CreateID(10)
+//
 package utils
 
 import (
-	"crypto/sha256"
-	"encoding/hex"
-
 	"github.com/google/uuid"
 )
 
-// Create uniq id.
-func CreateId() (string, error) {
-	id, err := uuid.NewUUID()
-	if err != nil {
-		return "", nil
+const MAX_ID_LENGTH = 64
+
+// UUID生成
+func UUID() string {
+	return uuid.NewString()
+}
+
+// 指定行のIDを作成
+// 最大 64文字
+// 0を指定すると最大値
+func CreateID(length int) string {
+	hash := NewHash(UUID())
+
+	result := hash.SHA256()
+
+	if length == 0 {
+		return result
 	}
-
-	hashedValue := sha256.Sum256([]byte(id.String()))
-
-	return hex.EncodeToString(hashedValue[:]), nil
+	return result[:length]
 }
