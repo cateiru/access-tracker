@@ -41,7 +41,7 @@ func TrackHandler(w http.ResponseWriter, r *http.Request) error {
 	if utils.IsUrl(redirect) {
 		http.Redirect(w, r, redirect, http.StatusFound)
 	} else {
-		net.ResponseOK(w, redirect)
+		w.Write([]byte(redirect))
 	}
 
 	w.Header().Set("Cache-Control", "no-store")

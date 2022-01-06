@@ -24,10 +24,12 @@ func TestUserAgent(t *testing.T) {
 	for _, s := range userAgents {
 		parse := ua.Parse(s)
 
-		target, err := common.UserAgentToJson(s)
+		target := common.NewUserAgent(s)
+
+		jsonUA, err := target.ToJson()
 		require.NoError(t, err)
 
-		ex, err := common.ParseUserAgentJson(target)
+		ex, err := common.ParseUserAgentJson(jsonUA)
 		require.NoError(t, err)
 
 		require.Equal(t, ex.Name, parse.Name)
