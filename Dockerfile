@@ -1,3 +1,5 @@
+# syntax = docker/dockerfile:1.0-experimental
+
 FROM golang:alpine as builder
 
 RUN apk update && apk add --no-cache ca-certificates && update-ca-certificates
@@ -6,12 +8,7 @@ WORKDIR /go/src
 COPY go.mod go.sum ./
 RUN go mod download
 
-COPY ./control ./control/
-COPY ./database ./database/
-COPY ./handler ./handler/
-COPY ./types ./types/
-COPY ./utils ./utils/
-COPY ./main.go ./
+COPY . ./
 
 ARG CGO_ENABLED=0
 ARG GOOS=linux

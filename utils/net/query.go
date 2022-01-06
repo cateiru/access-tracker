@@ -1,18 +1,11 @@
-package utils
+package net
 
 import (
 	"errors"
 	"net/http"
 )
 
-// Get http query.
-//
-// Arguments
-//	- r - request.
-//	- key - query key.
-//
-// Returns
-//	query string
+// URLのクエリパラメータを取得します
 func GetQuery(r *http.Request, key string) (string, error) {
 	query := r.URL.Query().Get(key)
 
