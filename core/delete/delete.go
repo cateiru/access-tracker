@@ -4,7 +4,7 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/cateiru/access-tracker/core/commom"
+	"github.com/cateiru/access-tracker/core/common"
 	"github.com/cateiru/access-tracker/database"
 	"github.com/cateiru/access-tracker/models"
 	"github.com/cateiru/access-tracker/utils/net"
@@ -38,7 +38,7 @@ func Delete(ctx context.Context, id string, accessKey string) error {
 	}
 
 	// アクセスキーを検証する
-	if err := commom.ValidateKey(ctx, db, id, accessKey); err != nil {
+	if err := common.ValidateKey(ctx, db, id, accessKey); err != nil {
 		return err
 	}
 

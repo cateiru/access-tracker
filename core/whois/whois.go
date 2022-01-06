@@ -3,8 +3,9 @@ package whois
 import (
 	"context"
 	"net/http"
+	"strconv"
 
-	"github.com/cateiru/access-tracker/core/commom"
+	"github.com/cateiru/access-tracker/core/common"
 	"github.com/cateiru/access-tracker/database"
 	"github.com/cateiru/access-tracker/models"
 	"github.com/cateiru/access-tracker/utils/net"
@@ -24,7 +25,18 @@ func WhoisHandler(w http.ResponseWriter, r *http.Request) error {
 		return status.NewBadRequestError(err).Caller()
 	}
 
-	history, err := WhoIs(ctx, id, accessKey)
+	// limitを指定する
+	// もし、指定がない場合はすべての要素が返る
+	limitStr := r.URL.Query().Get("limit")
+	limit := -1
+	if len(limitStr) != 0 {
+		limit, err = strconv.Atoi(limitStr)
+		if err != nil {
+			return status.NewInternalServerErrorError(err).Caller()
+		}
+	}
+
+	history, err := WhoIs(ctx, id, accessKey, limit)
 	if err != nil {
 		return err
 	}
@@ -34,18 +46,18 @@ func WhoisHandler(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
-func WhoIs(ctx context.Context, id string, accessKey string) ([]models.History, error) {
+func WhoIs(ctx context.Context, id string, accessKey string, limit int) ([]models.History, error) {
 	db, err := database.NewDatabase(ctx)
 	if err != nil {
 		return nil, status.NewInternalServerErrorError(err).Caller()
 	}
 
 	// アクセスキーを検証する
-	if err := commom.ValidateKey(ctx, db, id, accessKey); err != nil {
+	if err := common.ValidateKey(ctx, db, id, accessKey); err != nil {
 		return nil, status.NewBadRequestError(err).Caller()
 	}
 
-	histories, err := models.GetHistoriesByTrackID(ctx, db, id)
+	histories, err := models.GetHistoriesByTrackID(ctx, db, id, limit)
 	if err != nil {
 		return nil, status.NewInternalServerErrorError(err).Caller()
 	}

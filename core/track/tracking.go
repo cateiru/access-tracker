@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/cateiru/access-tracker/core/common"
 	"github.com/cateiru/access-tracker/database"
 	"github.com/cateiru/access-tracker/models"
 	"github.com/cateiru/access-tracker/utils"
@@ -64,9 +65,14 @@ func Tracking(ctx context.Context, id string, ip string, userAgent string) (stri
 		return "", status.NewNotFoundError(errors.New("")).Caller()
 	}
 
+	analyzedUserAgent, err := common.UserAgentToJson(userAgent)
+	if err != nil {
+		return "", status.NewInternalServerErrorError(err).Caller()
+	}
+
 	history := models.History{
 		Ip:        ip,
-		UserAgent: userAgent,
+		UserAgent: string(analyzedUserAgent),
 		UniqueId:  utils.CreateID(0),
 		Date:      time.Now(),
 	}

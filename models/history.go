@@ -7,8 +7,8 @@ import (
 	"github.com/cateiru/access-tracker/database"
 )
 
-func GetHistoriesByTrackID(ctx context.Context, db *database.Database, trackId string) ([]History, error) {
-	query := datastore.NewQuery("History").Filter("trackId =", trackId)
+func GetHistoriesByTrackID(ctx context.Context, db *database.Database, trackId string, limit int) ([]History, error) {
+	query := datastore.NewQuery("History").Filter("trackId =", trackId).Limit(limit)
 	var entities []History
 
 	if _, err := db.GetAll(ctx, query, &entities); err != nil {
@@ -16,6 +16,12 @@ func GetHistoriesByTrackID(ctx context.Context, db *database.Database, trackId s
 	}
 
 	return entities, nil
+}
+
+func CountHistoriesByTrackID(ctx context.Context, db *database.Database, trackId string) (int, error) {
+	query := datastore.NewQuery("History").Filter("trackId =", trackId)
+
+	return db.Count(ctx, query)
 }
 
 func DeleteHistoriesByTrackID(ctx context.Context, db *database.Database, trackId string) error {
