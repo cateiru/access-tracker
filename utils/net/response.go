@@ -50,9 +50,6 @@ type ErrorResponse struct {
 // http statusはHTTPErrorで定義してください。
 // See more: https://github.com/cateiru/go-http-error
 func ResponseError(w http.ResponseWriter, err error) {
-	id := utils.CreateID(10)
-
-	logging.Sugar.Errorf("HTTP ERROR. id: %v, message: %v", id, err.Error())
 
 	var statusCode int
 	var customCode int
@@ -68,15 +65,21 @@ func ResponseError(w http.ResponseWriter, err error) {
 		customCode = DefaultError
 	}
 
-	body := ErrorResponse{
-		StatusCode: statusCode,
-		ErrorID:    id,
-		AbstractResponse: AbstractResponse{
-			Code: customCode,
-		},
+	// 404のときはエラーはトレースしない
+	if statusCode == 404 {
+		w.WriteHeader(http.StatusNotFound)
+	} else {
+		id := utils.CreateID(10)
+		body := ErrorResponse{
+			StatusCode: statusCode,
+			ErrorID:    id,
+			AbstractResponse: AbstractResponse{
+				Code: customCode,
+			},
+		}
+		logging.Sugar.Errorf("HTTP ERROR. id: %v, message: %v", id, err.Error())
+		ResponseCustomStatus(w, statusCode, body)
 	}
-
-	ResponseCustomStatus(w, statusCode, body)
 }
 
 // カスタムに独自ステータスコードを決定し、エラーをHTTPで返す
