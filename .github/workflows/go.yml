@@ -1,4 +1,4 @@
-name: Go
+name: Lint
 
 on:
   push:
@@ -7,12 +7,23 @@ on:
     branches: [ main ]
 
 jobs:
-
-  build:
+  go:
+    name: go test
     runs-on: ubuntu-latest
+    timeout-minutes: 5
+    services:
+      datastore:
+        image: singularities/datastore-emulator
+        env:
+          DATASTORE_LISTEN_ADDRESS: 0.0.0.0:18001
+          DATASTORE_PROJECT_ID: access-tracker-test
+        ports:
+          - 18001:18001
+    env:
+      DATASTORE_EMULATOR_HOST: localhost:18001
+      DATASTORE_PROJECT_ID: access-tracker-test
     steps:
     - uses: actions/checkout@v2
-
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
@@ -22,4 +33,7 @@ jobs:
       run: go build -v ./...
 
     - name: Test
-      run: go test -v ./...
+      run: go test ./... -v -coverpkg=./... -race -coverprofile=coverage.out -covermode=atomic
+    - name: Upload coverage to Codecov
+      run: bash <(curl -s https://codecov.io/bash)
+    
