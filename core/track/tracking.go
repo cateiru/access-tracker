@@ -1,14 +1,14 @@
-package control
+package track
 
 import (
 	"context"
 
-	"github.com/yuto51942/access-tracker/database"
+	"github.com/yuto51942/access-tracker/core"
 )
 
 func Tracking(ctx *context.Context, id string, ip string) (string, error) {
 	// note: accessKey is not used.
-	dbOp, err := database.NewOperator(ctx, id, "")
+	dbOp, err := core.NewOperator(ctx, id, "")
 	if err != nil {
 		return "", err
 	}

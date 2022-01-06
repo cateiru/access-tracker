@@ -1,9 +1,9 @@
-package control
+package create
 
 import (
 	"context"
 
-	"github.com/yuto51942/access-tracker/database"
+	"github.com/yuto51942/access-tracker/core"
 	"github.com/yuto51942/access-tracker/types"
 	"github.com/yuto51942/access-tracker/utils"
 )
@@ -29,7 +29,7 @@ func Create(ctx *context.Context, redirectUrl string) ([]byte, error) {
 }
 
 func setDB(ctx *context.Context, value types.Created) error {
-	dbOp, err := database.NewOperator(ctx, value.TrackId, value.AccessKey)
+	dbOp, err := core.NewOperator(ctx, value.TrackId, value.AccessKey)
 	if err != nil {
 		return err
 	}

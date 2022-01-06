@@ -1,14 +1,14 @@
-package control
+package whois
 
 import (
 	"context"
 
-	"github.com/yuto51942/access-tracker/database"
+	"github.com/yuto51942/access-tracker/core"
 	"github.com/yuto51942/access-tracker/utils"
 )
 
 func WhoIs(ctx *context.Context, id string, accessKey string) ([]byte, error) {
-	dbOp, err := database.NewOperator(ctx, id, accessKey)
+	dbOp, err := core.NewOperator(ctx, id, accessKey)
 	if err != nil {
 		return nil, err
 	}

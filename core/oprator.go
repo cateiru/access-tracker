@@ -1,4 +1,4 @@
-package database
+package core
 
 import (
 	"context"
@@ -6,18 +6,19 @@ import (
 	"time"
 
 	"cloud.google.com/go/datastore"
+	"github.com/yuto51942/access-tracker/database"
 	"github.com/yuto51942/access-tracker/types"
 	"github.com/yuto51942/access-tracker/utils"
 )
 
 type Operator struct {
-	db        *Database
+	db        *database.Database
 	id        string
 	accessKey string
 }
 
 func NewOperator(ctx *context.Context, id string, accessKey string) (*Operator, error) {
-	db, err := New(ctx)
+	db, err := database.New(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -30,7 +31,7 @@ func NewOperator(ctx *context.Context, id string, accessKey string) (*Operator, 
 }
 
 func (c *Operator) GetTracking() (*types.IdEntity, error) {
-	key := utils.CreateKey("Tracking", c.id)
+	key := database.CreateNameKey("Tracking", c.id)
 	entity := new(types.IdEntity)
 
 	if err := c.db.Get(key, entity); err != nil {
@@ -41,7 +42,7 @@ func (c *Operator) GetTracking() (*types.IdEntity, error) {
 }
 
 func (c *Operator) SetTracking(redirectUrl string) error {
-	key := utils.CreateKey("Tracking", c.id)
+	key := database.CreateNameKey("Tracking", c.id)
 	entity := types.IdEntity{
 		TrackId:     c.id,
 		AccessKey:   c.accessKey,
@@ -83,7 +84,7 @@ func (c *Operator) SetHistory(ip string) error {
 		return err
 	}
 
-	historyKey := utils.CreateKey(c.id, uniqueId)
+	historyKey := database.CreateNameKey(c.id, uniqueId)
 	entity := types.History{
 		Ip:       ip,
 		UniqueId: uniqueId,
@@ -106,14 +107,14 @@ func (c *Operator) Delete() error {
 	keys := []*datastore.Key{}
 
 	for _, history := range *histories {
-		keys = append(keys, utils.CreateKey(c.id, history.UniqueId))
+		keys = append(keys, database.CreateNameKey(c.id, history.UniqueId))
 	}
 
 	if err := c.db.DeleteMulti(keys); err != nil {
 		return err
 	}
 
-	key := utils.CreateKey("Tracking", c.id)
+	key := database.CreateNameKey("Tracking", c.id)
 
 	return c.db.Delete(key)
 
