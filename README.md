@@ -1,3 +1,5 @@
+[![codecov](https://codecov.io/gh/cateiru/access-tracker/branch/main/graph/badge.svg?token=XPDUL0ZJR2)](https://codecov.io/gh/cateiru/access-tracker)
+
 # access-tracker
 
 Access tracking
