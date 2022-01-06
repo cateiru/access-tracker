@@ -13,6 +13,6 @@ type History struct {
 	UniqueId  string    `datastore:"uniqueId" json:"unique_id"`
 	TrackId   string    `datastore:"trackId" json:"track_id"`
 	Ip        string    `datastore:"ip" json:"ip"`
-	UserAgent string    `datastore:"datastore" json:"datastore"`
+	UserAgent string    `datastore:"useragent" json:"useragent"`
 	Date      time.Time `datastore:"date" json:"time"`
 }
