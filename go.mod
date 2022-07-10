@@ -12,6 +12,7 @@ require (
 require (
 	cloud.google.com/go v0.100.2 // indirect
 	cloud.google.com/go/compute v0.1.0 // indirect
+	github.com/cateiru/go-client-hints v1.0.3 // indirect
 	github.com/cateiru/go-http-error v1.3.0 // indirect
 	github.com/cateiru/go-retry v0.0.0-20211211132845-fe6a1f4e84d0 // indirect
 	github.com/census-instrumentation/opencensus-proto v0.3.0 // indirect
